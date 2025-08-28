@@ -133,13 +133,23 @@ func update_movement(delta):
 
 func move_to(target: Vector2):
 	target_position = target
-	path = get_path_to_target(target)
+	# Get path synchronously without await
+	path = get_path_to_target_sync(target)
 	current_path_index = 0
 	
 	if path.size() > 0:
 		change_state(UnitState.MOVING)
 	else:
 		change_state(UnitState.IDLE)
+
+func get_path_to_target_sync(target: Vector2) -> Array[Vector2]:
+	navigation_agent.target_position = target
+	
+	if navigation_agent.is_navigation_finished():
+		return []
+	
+	var path_points = navigation_agent.get_current_navigation_path()
+	return path_points
 
 func get_path_to_target(target: Vector2) -> Array[Vector2]:
 	navigation_agent.target_position = target
