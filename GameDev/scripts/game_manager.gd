@@ -170,7 +170,8 @@ func is_resources_depleted() -> bool:
 	
 	if all_depleted:
 		# Check if we have enough resources to survive
-		return not resources.can_afford(biomass_cost=5, minerals_cost=3)
+		var can_afford = resources.can_afford(biomass_cost=5, minerals_cost=3)
+		return not can_afford
 	
 	return false
 

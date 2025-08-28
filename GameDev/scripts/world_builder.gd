@@ -411,7 +411,13 @@ func start_building_mode(mode: BuildMode, type: String):
 			build_preview.texture = create_gradient_texture(16, 16, Color(0.2, 0.6, 0.8), Color(0.1, 0.4, 0.6))
 		BuildMode.STRUCTURE:
 			selected_structure_type = type
-			var size = 24 if type == "spire" else 32 if type == "nursery" else 16
+			var size: int
+			if type == "spire":
+				size = 24
+			elif type == "nursery":
+				size = 32
+			else:
+				size = 16
 			build_preview.texture = create_gradient_texture(size, size, Color(0.4, 0.8, 0.4), Color(0.2, 0.6, 0.2))
 		BuildMode.RESOURCE:
 			selected_resource_type = type

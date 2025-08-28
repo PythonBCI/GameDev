@@ -152,13 +152,20 @@ func is_defeat_condition_met() -> bool:
 	return health <= 0 or current_units < 3
 
 func get_resource_storage_info() -> Dictionary:
+	var biomass_info = str(resources.biomass) + "/" + str(resources.BIOMASS_LIMIT)
+	var live_prey_info = str(resources.live_prey) + "/" + str(resources.LIVE_PREY_LIMIT)
+	var genetic_info = str(resources.genetic_material) + "/" + str(resources.GENETIC_MATERIAL_LIMIT)
+	var minerals_info = str(resources.minerals) + "/" + str(resources.MINERALS_LIMIT)
+	var secretions_info = str(resources.secretions) + "/" + str(resources.SECRETIONS_LIMIT)
+	var eggs_info = str(resources.eggs) + "/" + str(resources.EGGS_LIMIT)
+	
 	return {
-		"biomass": str(resources.biomass) + "/" + str(resources.BIOMASS_LIMIT),
-		"live_prey": str(resources.live_prey) + "/" + str(resources.LIVE_PREY_LIMIT),
-		"genetic_material": str(resources.genetic_material) + "/" + str(resources.GENETIC_MATERIAL_LIMIT),
-		"minerals": str(resources.minerals) + "/" + str(resources.MINERALS_LIMIT),
-		"secretions": str(resources.secretions) + "/" + str(resources.SECRETIONS_LIMIT),
-		"eggs": str(resources.eggs) + "/" + str(resources.EGGS_LIMIT)
+		"biomass": biomass_info,
+		"live_prey": live_prey_info,
+		"genetic_material": genetic_info,
+		"minerals": minerals_info,
+		"secretions": secretions_info,
+		"eggs": eggs_info
 	}
 
 func on_unit_died():

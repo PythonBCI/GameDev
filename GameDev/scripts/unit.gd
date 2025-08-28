@@ -21,6 +21,11 @@ var navigation_agent: NavigationAgent2D
 var carried_resources: Dictionary = {}
 var is_carrying: bool = false
 
+# Resource gathering
+var nearest_resource: Node = null
+var gathering_target: Node = null
+var return_to_hive: bool = false
+
 # Animation
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
