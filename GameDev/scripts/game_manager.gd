@@ -10,7 +10,7 @@ enum GameState {PLAYING, VICTORY, DEFEAT, PAUSED}
 
 # Resources and economy
 var resources: GameResources
-var hive_core: HiveCore
+var hive_core: Node
 
 # Game systems (placeholder nodes for now)
 var pheromone_system: Node

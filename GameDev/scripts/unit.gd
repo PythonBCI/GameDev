@@ -1,7 +1,7 @@
 class_name Unit
 extends CharacterBody2D
 
-enum UnitType {WORKER_DRONE, HARVESTER, QUEEN, LARVAE}
+enum UnitType {WORKER_DRONE, HARVESTER, QUEEN, LARVAE, OPPOSING_WORKER}
 enum UnitState {IDLE, MOVING, GATHERING, ATTACKING, CARRYING, DEAD}
 
 @export var unit_type: UnitType

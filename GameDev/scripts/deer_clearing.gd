@@ -38,12 +38,12 @@ func spawn_deer():
 	deer.add_to_group("deer")
 	deer.add_to_group("animals")
 	
-	# Add deer sprite
-	var sprite = Sprite2D.new()
-	var texture = GradientTexture2D.new()
-	var gradient = Gradient.new()
-	gradient.colors = PackedColorArray(Color(0.6, 0.4, 0.2), Color(0.4, 0.3, 0.1))
-	texture.gradient = gradient
+			# Add deer sprite
+		var sprite = Sprite2D.new()
+		var texture = GradientTexture2D.new()
+		var gradient = Gradient.new()
+		gradient.colors = PackedColorArray([Color(0.6, 0.4, 0.2), Color(0.4, 0.3, 0.1)])
+		texture.gradient = gradient
 	texture.width = 20
 	texture.height = 16
 	sprite.texture = texture

@@ -51,8 +51,8 @@ func can_afford_eggs() -> bool:
 	
 	var hive_resources = hive_core.get_total_resources()
 	return hive_resources.can_afford(
-		biomass_cost=egg_laying_cost.get("biomass", 0),
-		genetic_material_cost=egg_laying_cost.get("genetic_material", 0)
+		egg_laying_cost.get("biomass", 0),
+		egg_laying_cost.get("genetic_material", 0)
 	)
 
 func start_egg_laying():
@@ -75,8 +75,8 @@ func lay_eggs():
 	if hive_core and hive_core.has_method("get_total_resources"):
 		var hive_resources = hive_core.get_total_resources()
 		hive_resources.spend_resources(
-			biomass_cost=egg_laying_cost.get("biomass", 0),
-			genetic_material_cost=egg_laying_cost.get("genetic_material", 0)
+			egg_laying_cost.get("biomass", 0),
+			egg_laying_cost.get("genetic_material", 0)
 		)
 		
 		# Create larvae

@@ -58,12 +58,12 @@ func spawn_human():
 	human.add_to_group("humans")
 	human.add_to_group("enemies")
 	
-	# Add human sprite
-	var sprite = Sprite2D.new()
-	var texture = GradientTexture2D.new()
-	var gradient = Gradient.new()
-	gradient.colors = PackedColorArray(Color(0.8, 0.6, 0.4), Color(0.6, 0.4, 0.2))
-	texture.gradient = gradient
+			# Add human sprite
+		var sprite = Sprite2D.new()
+		var texture = GradientTexture2D.new()
+		var gradient = Gradient.new()
+		gradient.colors = PackedColorArray([Color(0.8, 0.6, 0.4), Color(0.6, 0.4, 0.2)])
+		texture.gradient = gradient
 	texture.width = 16
 	texture.height = 24
 	sprite.texture = texture

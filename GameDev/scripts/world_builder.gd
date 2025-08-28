@@ -157,7 +157,7 @@ func update_preview_sprite(build_type: String):
 func create_nest_preview() -> Texture2D:
 	var texture = GradientTexture2D.new()
 	var gradient = Gradient.new()
-	gradient.colors = PackedColorArray(Color(0.6, 0.2, 0.8), Color(0.4, 0.1, 0.6))
+	gradient.colors = PackedColorArray([Color(0.6, 0.2, 0.8), Color(0.4, 0.1, 0.6)])
 	texture.gradient = gradient
 	texture.width = 32
 	texture.height = 32
@@ -166,7 +166,7 @@ func create_nest_preview() -> Texture2D:
 func create_spire_preview() -> Texture2D:
 	var texture = GradientTexture2D.new()
 	var gradient = Gradient.new()
-	gradient.colors = PackedColorArray(Color(0.8, 0.6, 0.2), Color(0.6, 0.4, 0.1))
+	gradient.colors = PackedColorArray([Color(0.8, 0.6, 0.2), Color(0.6, 0.4, 0.1)])
 	texture.gradient = gradient
 	texture.width = 24
 	texture.height = 40
@@ -175,7 +175,7 @@ func create_spire_preview() -> Texture2D:
 func create_nursery_preview() -> Texture2D:
 	var texture = GradientTexture2D.new()
 	var gradient = Gradient.new()
-	gradient.colors = PackedColorArray(Color(0.2, 0.8, 0.6), Color(0.1, 0.6, 0.4))
+	gradient.colors = PackedColorArray([Color(0.2, 0.8, 0.6), Color(0.1, 0.6, 0.4)])
 	texture.gradient = gradient
 	texture.width = 40
 	texture.height = 32
@@ -184,7 +184,7 @@ func create_nursery_preview() -> Texture2D:
 func create_creep_node_preview() -> Texture2D:
 	var texture = GradientTexture2D.new()
 	var gradient = Gradient.new()
-	gradient.colors = PackedColorArray(Color(0.8, 0.2, 0.8), Color(0.6, 0.1, 0.6))
+	gradient.colors = PackedColorArray([Color(0.8, 0.2, 0.8), Color(0.6, 0.1, 0.6)])
 	texture.gradient = gradient
 	texture.width = 16
 	texture.height = 16
@@ -193,7 +193,7 @@ func create_creep_node_preview() -> Texture2D:
 func create_worker_preview() -> Texture2D:
 	var texture = GradientTexture2D.new()
 	var gradient = Gradient.new()
-	gradient.colors = PackedColorArray(Color(0.2, 0.6, 0.8), Color(0.1, 0.4, 0.6))
+	gradient.colors = PackedColorArray([Color(0.2, 0.6, 0.8), Color(0.1, 0.4, 0.6)])
 	texture.gradient = gradient
 	texture.width = 16
 	texture.height = 16
@@ -202,7 +202,7 @@ func create_worker_preview() -> Texture2D:
 func create_harvester_preview() -> Texture2D:
 	var texture = GradientTexture2D.new()
 	var gradient = Gradient.new()
-	gradient.colors = PackedColorArray(Color(0.8, 0.4, 0.2), Color(0.6, 0.3, 0.1))
+	gradient.colors = PackedColorArray([Color(0.8, 0.4, 0.2), Color(0.6, 0.3, 0.1)])
 	texture.gradient = gradient
 	texture.width = 20
 	texture.height = 16
@@ -211,7 +211,7 @@ func create_harvester_preview() -> Texture2D:
 func create_queen_preview() -> Texture2D:
 	var texture = GradientTexture2D.new()
 	var gradient = Gradient.new()
-	gradient.colors = PackedColorArray(Color(0.8, 0.2, 0.6), Color(0.6, 0.1, 0.4))
+	gradient.colors = PackedColorArray([Color(0.8, 0.2, 0.6), Color(0.6, 0.1, 0.4)])
 	texture.gradient = gradient
 	texture.width = 24
 	texture.height = 20
@@ -220,7 +220,7 @@ func create_queen_preview() -> Texture2D:
 func create_larvae_preview() -> Texture2D:
 	var texture = GradientTexture2D.new()
 	var gradient = Gradient.new()
-	gradient.colors = PackedColorArray(Color(0.6, 0.8, 0.2), Color(0.4, 0.6, 0.1))
+	gradient.colors = PackedColorArray([Color(0.6, 0.8, 0.2), Color(0.4, 0.6, 0.1)])
 	texture.gradient = gradient
 	texture.width = 12
 	texture.height = 12
@@ -229,7 +229,7 @@ func create_larvae_preview() -> Texture2D:
 func create_default_preview() -> Texture2D:
 	var texture = GradientTexture2D.new()
 	var gradient = Gradient.new()
-	gradient.colors = PackedColorArray(Color(0.5, 0.5, 0.5), Color(0.3, 0.3, 0.3))
+	gradient.colors = PackedColorArray([Color(0.5, 0.5, 0.5), Color(0.3, 0.3, 0.3)])
 	texture.gradient = gradient
 	texture.width = 16
 	texture.height = 16
@@ -313,7 +313,7 @@ func create_nest(pos: Vector2) -> Node:
 	var sprite = Sprite2D.new()
 	var texture = GradientTexture2D.new()
 	var gradient = Gradient.new()
-	gradient.colors = PackedColorArray(Color(0.6, 0.2, 0.8), Color(0.4, 0.1, 0.6))
+	gradient.colors = PackedColorArray([Color(0.6, 0.2, 0.8), Color(0.4, 0.1, 0.6)])
 	texture.gradient = gradient
 	texture.width = 32
 	texture.height = 32
@@ -337,7 +337,7 @@ func create_spire(pos: Vector2) -> Node:
 	var sprite = Sprite2D.new()
 	var texture = GradientTexture2D.new()
 	var gradient = Gradient.new()
-	gradient.colors = PackedColorArray(Color(0.8, 0.6, 0.2), Color(0.6, 0.4, 0.1))
+	gradient.colors = PackedColorArray([Color(0.8, 0.6, 0.2), Color(0.6, 0.4, 0.1)])
 	texture.gradient = gradient
 	texture.width = 24
 	texture.height = 40
@@ -361,7 +361,7 @@ func create_nursery(pos: Vector2) -> Node:
 	var sprite = Sprite2D.new()
 	var texture = GradientTexture2D.new()
 	var gradient = Gradient.new()
-	gradient.colors = PackedColorArray(Color(0.2, 0.8, 0.6), Color(0.1, 0.6, 0.4))
+	gradient.colors = PackedColorArray([Color(0.2, 0.8, 0.6), Color(0.1, 0.6, 0.4)])
 	texture.gradient = gradient
 	texture.width = 40
 	texture.height = 32
@@ -385,7 +385,7 @@ func create_creep_node(pos: Vector2) -> Node:
 	var sprite = Sprite2D.new()
 	var texture = GradientTexture2D.new()
 	var gradient = Gradient.new()
-	gradient.colors = PackedColorArray(Color(0.8, 0.2, 0.8), Color(0.6, 0.1, 0.6))
+	gradient.colors = PackedColorArray([Color(0.8, 0.2, 0.8), Color(0.6, 0.1, 0.6)])
 	texture.gradient = gradient
 	texture.width = 16
 	texture.height = 16

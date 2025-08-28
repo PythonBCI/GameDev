@@ -165,5 +165,5 @@ func on_unit_died():
 	if current_units < 0:
 		current_units = 0
 
-func is_aggressive() -> bool:
+func get_aggression_status() -> bool:
 	return is_aggressive

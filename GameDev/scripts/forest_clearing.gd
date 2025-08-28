@@ -41,7 +41,7 @@ func spawn_trees():
 		var sprite = Sprite2D.new()
 		var texture = GradientTexture2D.new()
 		var gradient = Gradient.new()
-		gradient.colors = PackedColorArray(Color(0.2, 0.4, 0.1), Color(0.1, 0.2, 0.05))
+		gradient.colors = PackedColorArray([Color(0.2, 0.4, 0.1), Color(0.1, 0.2, 0.05)])
 		texture.gradient = gradient
 		texture.width = 24
 		texture.height = 32
@@ -73,19 +73,19 @@ func spawn_animal():
 	var texture = GradientTexture2D.new()
 	var gradient = Gradient.new()
 	
-	match animal_type:
-		"deer":
-			gradient.colors = PackedColorArray(Color(0.6, 0.4, 0.2), Color(0.4, 0.3, 0.1))
-			texture.width = 20
-			texture.height = 16
-		"rabbit":
-			gradient.colors = PackedColorArray(Color(0.8, 0.6, 0.4), Color(0.6, 0.4, 0.2))
-			texture.width = 12
-			texture.height = 8
-		"squirrel":
-			gradient.colors = PackedColorArray(Color(0.6, 0.4, 0.2), Color(0.4, 0.3, 0.1))
-			texture.width = 10
-			texture.height = 6
+			match animal_type:
+			"deer":
+				gradient.colors = PackedColorArray([Color(0.6, 0.4, 0.2), Color(0.4, 0.3, 0.1)])
+				texture.width = 20
+				texture.height = 16
+			"rabbit":
+				gradient.colors = PackedColorArray([Color(0.8, 0.6, 0.4), Color(0.6, 0.4, 0.2)])
+				texture.width = 12
+				texture.height = 8
+			"squirrel":
+				gradient.colors = PackedColorArray([Color(0.6, 0.4, 0.2), Color(0.4, 0.3, 0.1)])
+				texture.width = 10
+				texture.height = 6
 	
 	texture.gradient = gradient
 	sprite.texture = texture

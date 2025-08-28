@@ -1,12 +1,12 @@
-[gd_scene load_steps=12 format=3 uid="uid://bqxvhxqxqxqxq"]
+[gd_scene load_steps=8 format=3 uid="uid://bqxvhxqxqxqxq"]
 
 [ext_resource type="Script" path="res://scripts/game_manager.gd" id="1_0k8m2"]
 [ext_resource type="Script" path="res://scripts/hive_core.gd" id="2_1k9n3"]
 [ext_resource type="Script" path="res://scripts/worker_drone.gd" id="3_2l0o4"]
-[ext_resource type="Script" path="res://scripts/enemy.gd" id="4_3m1p5"]
-[ext_resource type="Script" path="res://scripts/ui.gd" id="5_4n2q6"]
-[ext_resource type="Script" path="res://scripts/resource_node.gd" id="6_5o3r7"]
-[ext_resource type="Script" path="res://scripts/world_builder.gd" id="7_6p4s8"]
+[ext_resource type="Script" path="res://scripts/ui.gd" id="4_3m1p5"]
+[ext_resource type="Script" path="res://scripts/resource_node.gd" id="5_4n2q6"]
+[ext_resource type="Script" path="res://scripts/world_builder.gd" id="6_5o3r7"]
+[ext_resource type="Script" path="res://scripts/corruption_system.gd" id="7_6p4s8"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(32, 32)
@@ -26,7 +26,7 @@ width = 32
 height = 32
 
 [sub_resource type="Gradient" id="Gradient_2"]
-colors = PackedColorArray(0.2, 0.8, 0.2, 1, 0.1, 0.6, 0.1, 1)
+colors = PackedColorArray(0.2, 0.6, 0.8, 1, 0.1, 0.4, 0.6, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_2"]
 gradient = SubResource("Gradient_2")
@@ -41,12 +41,29 @@ gradient = SubResource("Gradient_3")
 width = 16
 height = 16
 
-[sub_resource type="TileSet" id="TileSet_1"]
-tile_size = Vector2i(16, 16)
+[sub_resource type="Gradient" id="Gradient_4"]
+colors = PackedColorArray(0.4, 0.3, 0.2, 1, 0.2, 0.15, 0.1, 1)
 
-[sub_resource type="NavigationPolygon2D" id="NavigationPolygon2D_1"]
-vertices = PackedVector2Array(0, 0, 1280, 0, 1280, 720, 0, 720)
-polygons = [PackedInt32Array(0, 1, 2, 3)]
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_4"]
+gradient = SubResource("Gradient_4")
+width = 1280
+height = 720
+
+[sub_resource type="Gradient" id="Gradient_5"]
+colors = PackedColorArray(0.3, 0.2, 0.1, 1, 0.1, 0.05, 0.05, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_5"]
+gradient = SubResource("Gradient_5")
+width = 32
+height = 32
+
+[sub_resource type="Gradient" id="Gradient_6"]
+colors = PackedColorArray(0.2, 0.8, 0.2, 1, 0.1, 0.6, 0.1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_6"]
+gradient = SubResource("Gradient_6")
+width = 16
+height = 16
 
 [node name="Main" type="Node2D"]
 
@@ -58,15 +75,20 @@ offset_left = -640.0
 offset_top = -360.0
 offset_right = 640.0
 offset_bottom = 360.0
-color = Color(0.2, 0.6, 0.2, 1)
+color = Color(0.4, 0.3, 0.2, 1)
 
-[node name="TileMap" type="TileMap" parent="."]
+[node name="WastelandTexture" type="Sprite2D" parent="Background"]
+texture = SubResource("GradientTexture2D_4")
+
+[node name="GameManager" type="Node" parent="."]
+script = ExtResource("1_0k8m2")
+
+[node name="CorruptionSystem" type="Node" parent="."]
+script = ExtResource("7_6p4s8")
+
+[node name="CorruptionLayer" type="TileMap" parent="."]
 format = 2
-tile_set = SubResource("TileSet_1")
 cell_size = Vector2i(16, 16)
-
-[node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
-navigation_polygon = SubResource("NavigationPolygon2D_1")
 
 [node name="Units" type="Node2D" parent="."]
 
@@ -98,295 +120,180 @@ shape = SubResource("RectangleShape2D_1")
 
 [node name="BiomassNode1" type="StaticBody2D" parent="Resources"]
 position = Vector2(400, 300)
-script = ExtResource("6_5o3r7")
+script = ExtResource("5_4n2q6")
 
 [node name="Sprite2D" type="Sprite2D" parent="Resources/BiomassNode1"]
 modulate = Color(0.2, 0.8, 0.2, 1)
-texture = SubResource("GradientTexture2D_2")
+texture = SubResource("GradientTexture2D_6")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Resources/BiomassNode1"]
 shape = SubResource("RectangleShape2D_2")
 
-[node name="MineralsNode1" type="StaticBody2D" parent="Resources"]
-position = Vector2(800, 400)
-script = ExtResource("6_5o3r7")
+[node name="CollectionArea" type="Area2D" parent="Resources/BiomassNode1"]
 
-[node name="Sprite2D" type="Sprite2D" parent="Resources/MineralsNode1"]
-modulate = Color(0.6, 0.6, 0.6, 1)
-texture = SubResource("GradientTexture2D_2")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Resources/MineralsNode1"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Resources/BiomassNode1/CollectionArea"]
 shape = SubResource("RectangleShape2D_2")
 
 [node name="BiomassNode2" type="StaticBody2D" parent="Resources"]
-position = Vector2(200, 500)
-script = ExtResource("6_5o3r7")
+position = Vector2(800, 200)
+script = ExtResource("5_4n2q6")
 
 [node name="Sprite2D" type="Sprite2D" parent="Resources/BiomassNode2"]
 modulate = Color(0.2, 0.8, 0.2, 1)
-texture = SubResource("GradientTexture2D_2")
+texture = SubResource("GradientTexture2D_6")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Resources/BiomassNode2"]
 shape = SubResource("RectangleShape2D_2")
 
-[node name="BiomassNode3" type="StaticBody2D" parent="Resources"]
-position = Vector2(1000, 200)
-script = ExtResource("6_5o3r7")
+[node name="CollectionArea" type="Area2D" parent="Resources/BiomassNode2"]
 
-[node name="Sprite2D" type="Sprite2D" parent="Resources/BiomassNode3"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Resources/BiomassNode2/CollectionArea"]
+shape = SubResource("RectangleShape2D_2")
+
+[node name="BiomassNode3" type="StaticBody2D" parent="Resources"]
+position = Vector2(500, 500)
+script = ExtResource("5_4n2q6")
+
+[node name="Sprite2D" type="Resources/BiomassNode3"]
 modulate = Color(0.2, 0.8, 0.2, 1)
-texture = SubResource("GradientTexture2D_2")
+texture = SubResource("GradientTexture2D_6")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Resources/BiomassNode3"]
 shape = SubResource("RectangleShape2D_2")
 
-[node name="BiomassNode4" type="StaticBody2D" parent="Resources"]
-position = Vector2(300, 150)
-script = ExtResource("6_5o3r7")
+[node name="CollectionArea" type="Area2D" parent="Resources/BiomassNode3"]
 
-[node name="Sprite2D" type="Sprite2D" parent="Resources/BiomassNode4"]
-modulate = Color(0.2, 0.8, 0.2, 1)
-texture = SubResource("GradientTexture2D_2")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Resources/BiomassNode4"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Resources/BiomassNode3/CollectionArea"]
 shape = SubResource("RectangleShape2D_2")
-
-[node name="BiomassNode5" type="StaticBody2D" parent="Resources"]
-position = Vector2(900, 600)
-script = ExtResource("6_5o3r7")
-
-[node name="Sprite2D" type="Sprite2D" parent="Resources/BiomassNode5"]
-modulate = Color(0.2, 0.8, 0.2, 1)
-texture = SubResource("GradientTexture2D_2")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Resources/BiomassNode5"]
-shape = SubResource("RectangleShape2D_2")
-
-[node name="Enemies" type="Node2D" parent="."]
-
-[node name="Enemy1" type="CharacterBody2D" parent="Enemies"]
-position = Vector2(300, 500)
-script = ExtResource("4_3m1p5")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemies/Enemy1"]
-shape = SubResource("RectangleShape2D_3")
-
-[node name="Sprite2D" type="Sprite2D" parent="Enemies/Enemy1"]
-modulate = Color(0.8, 0.4, 0.2, 1)
-texture = SubResource("GradientTexture2D_2")
-
-[node name="Enemy2" type="CharacterBody2D" parent="Enemies"]
-position = Vector2(900, 200)
-script = ExtResource("4_3m1p5")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemies/Enemy2"]
-shape = SubResource("RectangleShape2D_3")
-
-[node name="Sprite2D" type="Sprite2D" parent="Enemies/Enemy2"]
-modulate = Color(0.8, 0.4, 0.2, 1)
-texture = SubResource("GradientTexture2D_2")
 
 [node name="UI" type="CanvasLayer" parent="."]
-script = ExtResource("5_4n2q6")
 
 [node name="ResourceDisplay" type="Control" parent="UI"]
 layout_mode = 3
 anchors_preset = 1
-anchor_left = true
-anchor_right = true
-offset_left = 10.0
-offset_top = 10.0
-offset_right = -10.0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -200.0
 offset_bottom = 100.0
 
 [node name="BiomassLabel" type="Label" parent="UI/ResourceDisplay"]
-layout_mode = 0
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 100.0
-offset_bottom = 20.0
-text = "Biomass: 10"
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -180.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = 46.0
+text = "Biomass: 10/100"
+label_settings = SubResource("LabelSettings_1")
 
 [node name="MineralsLabel" type="Label" parent="UI/ResourceDisplay"]
-layout_mode = 0
-offset_left = 120.0
-offset_top = 0.0
-offset_right = 220.0
-offset_bottom = 20.0
-text = "Minerals: 5"
-
-[node name="GeneticMaterialLabel" type="Label" parent="UI/ResourceDisplay"]
-layout_mode = 0
-offset_left = 240.0
-offset_top = 0.0
-offset_right = 340.0
-offset_bottom = 20.0
-text = "Genetic: 0"
-
-[node name="SecretionsLabel" type="Label" parent="UI/ResourceDisplay"]
-layout_mode = 0
-offset_left = 360.0
-offset_top = 0.0
-offset_right = 460.0
-offset_bottom = 20.0
-text = "Secretions: 0"
-
-[node name="EggsLabel" type="Label" parent="UI/ResourceDisplay"]
-layout_mode = 0
-offset_left = 480.0
-offset_top = 0.0
-offset_right = 580.0
-offset_bottom = 20.0
-text = "Eggs: 0"
-
-[node name="BuildingButtons" type="Control" parent="UI"]
-layout_mode = 3
-anchors_preset = 3
-anchor_left = true
-anchor_top = true
-anchor_bottom = true
-offset_left = 10.0
-offset_top = 110.0
-offset_right = 200.0
-offset_bottom = -10.0
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/BuildingButtons"]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = true
-anchor_bottom = true
-
-[node name="Label" type="Label" parent="UI/BuildingButtons/VBoxContainer"]
-layout_mode = 2
-text = "Build Menu"
-horizontal_alignment = 1
-
-[node name="WorkerDroneButton" type="Button" parent="UI/BuildingButtons/VBoxContainer"]
-layout_mode = 2
-text = "Worker Drone (1 Biomass)"
-
-[node name="HarvesterButton" type="Button" parent="UI/BuildingButtons/VBoxContainer"]
-layout_mode = 2
-text = "Harvester (2 Biomass)"
-
-[node name="QueenButton" type="Button" parent="UI/BuildingButtons/VBoxContainer"]
-layout_mode = 2
-text = "Queen (5 Biomass + 2 Genetic)"
-
-[node name="LarvaeButton" type="Button" parent="UI/BuildingButtons/VBoxContainer"]
-layout_mode = 2
-text = "Larvae (1 Secretion)"
-
-[node name="Spacer1" type="Control" parent="UI/BuildingButtons/VBoxContainer"]
-layout_mode = 0
-custom_minimum_size = Vector2(0, 20)
-
-[node name="Label2" type="Label" parent="UI/BuildingButtons/VBoxContainer"]
-layout_mode = 2
-text = "Structures"
-horizontal_alignment = 1
-
-[node name="SpireButton" type="Button" parent="UI/BuildingButtons/VBoxContainer"]
-layout_mode = 2
-text = "Spire (3 Minerals)"
-
-[node name="NurseryButton" type="Button" parent="UI/BuildingButtons/VBoxContainer"]
-layout_mode = 2
-text = "Nursery (5 Minerals + 2 Biomass)"
-
-[node name="CreepNodeButton" type="Button" parent="UI/BuildingButtons/VBoxContainer"]
-layout_mode = 2
-text = "Creep Node (1 Biomass)"
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -180.0
+offset_top = 50.0
+offset_right = -20.0
+offset_bottom = 76.0
+text = "Minerals: 5/50"
 
 [node name="GameStatus" type="Control" parent="UI"]
 layout_mode = 3
 anchors_preset = 2
-anchor_top = true
-anchor_bottom = true
-anchor_right = true
-offset_left = 1000.0
-offset_top = 10.0
-offset_right = -10.0
-offset_bottom = -10.0
-
-[node name="TimeLabel" type="Label" parent="UI/GameStatus"]
-layout_mode = 0
-offset_left = 0.0
-offset_top = 0.0
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -100.0
 offset_right = 200.0
+
+[node name="UnitCountLabel" type="Label" parent="UI/GameStatus"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -80.0
+offset_right = 180.0
+offset_bottom = -54.0
+text = "Units: 1/20"
+
+[node name="CorruptionLabel" type="Label" parent="UI/GameStatus"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -50.0
+offset_right = 180.0
+offset_bottom = -24.0
+text = "Corruption: 0%"
+
+[node name="NestsLabel" type="Label" parent="UI/GameStatus"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -20.0
+offset_right = 180.0
+offset_bottom = 6.0
+text = "Nests: 0/5"
+
+[node name="BuildingButtons" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -200.0
+offset_right = 200.0
+offset_bottom = -120.0
+
+[node name="WorkerDroneButton" type="Button" parent="UI/BuildingButtons"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = -60.0
+offset_right = 80.0
+offset_bottom = -20.0
+text = "Worker (5)"
+
+[node name="NestButton" type="Button" parent="UI/BuildingButtons"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 90.0
+offset_top = -60.0
+offset_right = 170.0
+offset_bottom = -20.0
+text = "Nest (10)"
+
+[node name="RestartButton" type="Button" parent="UI/BuildingButtons"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = -20.0
+offset_right = 80.0
 offset_bottom = 20.0
-text = "Time: 0:00"
-
-[node name="UnitsLabel" type="Label" parent="UI/GameStatus"]
-layout_mode = 0
-offset_left = 0.0
-offset_top = 30.0
-offset_right = 200.0
-offset_bottom = 50.0
-text = "Units: 0"
-
-[node name="GameManager" type="Node" parent="."]
-script = ExtResource("1_0k8m2")
+text = "Restart"
 
 [node name="WorldBuilder" type="Node" parent="."]
-script = ExtResource("7_6p4s8")
+script = ExtResource("6_5o3r7")
 
-[ext_resource type="Script" path="res://scripts/corruption_system.gd" id="16_5y3b7"]
+[node name="BuildPreview" type="Sprite2D" parent="WorldBuilder"]
+modulate = Color(0, 1, 0, 0.5)
+texture = SubResource("GradientTexture2D_3")
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_1"]
-radius = 48.0
+[node name="Camera2D" type="Camera2D" parent="."]
+enabled = true
+zoom = Vector2(1, 1)
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_4"]
-gradient = SubResource("Gradient_4")
-width = 96
-height = 96
-
-[sub_resource type="Gradient" id="Gradient_4"]
-colors = PackedColorArray(0.2, 0.4, 0.8, 1, 0.1, 0.2, 0.6, 1)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_4"]
-size = Vector2(80, 60)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_5"]
-gradient = SubResource("Gradient_5")
-width = 80
-height = 60
-
-[sub_resource type="Gradient" id="Gradient_5"]
-colors = PackedColorArray(0.1, 0.4, 0.1, 1, 0.05, 0.2, 0.05, 1)
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_2"]
-radius = 16.0
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_6"]
-gradient = SubResource("Gradient_6")
-width = 32
-height = 32
-
-[sub_resource type="Gradient" id="Gradient_6"]
-colors = PackedColorArray(0.4, 0.3, 0.2, 1, 0.2, 0.1, 0.05, 1)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_5"]
-size = Vector2(60, 40)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_7"]
-gradient = SubResource("Gradient_7")
-width = 60
-height = 40
-
-[sub_resource type="Gradient" id="Gradient_7"]
-colors = PackedColorArray(0.3, 0.5, 0.2, 1, 0.1, 0.3, 0.1, 1)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_6"]
-size = Vector2(64, 48)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_8"]
-gradient = SubResource("Gradient_8")
-width = 64
-height = 48
-
-[sub_resource type="Gradient" id="Gradient_8"]
-colors = PackedColorArray(0.6, 0.4, 0.2, 1, 0.3, 0.2, 0.1, 1)
-
-[sub_resource type="TileSet" id="TileSet_2"]
-tile_size = Vector2i(16, 16)
+[sub_resource type="LabelSettings" id="LabelSettings_1"]
+font_size = 16
+font_color = Color(1, 1, 1, 1)

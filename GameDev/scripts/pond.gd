@@ -36,12 +36,12 @@ func spawn_fish():
 	var fish = StaticBody2D.new()
 	fish.add_to_group("fish")
 	
-	# Add sprite
-	var sprite = Sprite2D.new()
-	var texture = GradientTexture2D.new()
-	var gradient = Gradient.new()
-	gradient.colors = PackedColorArray(Color(0.8, 0.6, 0.2), Color(0.6, 0.4, 0.1))
-	texture.gradient = gradient
+			# Add sprite
+		var sprite = Sprite2D.new()
+		var texture = GradientTexture2D.new()
+		var gradient = Gradient.new()
+		gradient.colors = PackedColorArray([Color(0.8, 0.6, 0.2), Color(0.6, 0.4, 0.1)])
+		texture.gradient = gradient
 	texture.width = 16
 	texture.height = 8
 	sprite.texture = texture

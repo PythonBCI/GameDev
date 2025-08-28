@@ -38,12 +38,12 @@ func spawn_rabbit():
 	rabbit.add_to_group("rabbits")
 	rabbit.add_to_group("animals")
 	
-	# Add rabbit sprite
-	var sprite = Sprite2D.new()
-	var texture = GradientTexture2D.new()
-	var gradient = Gradient.new()
-	gradient.colors = PackedColorArray(Color(0.8, 0.6, 0.4), Color(0.6, 0.4, 0.2))
-	texture.gradient = gradient
+			# Add rabbit sprite
+		var sprite = Sprite2D.new()
+		var texture = GradientTexture2D.new()
+		var gradient = Gradient.new()
+		gradient.colors = PackedColorArray([Color(0.8, 0.6, 0.4), Color(0.6, 0.4, 0.2)])
+		texture.gradient = gradient
 	texture.width = 12
 	texture.height = 8
 	sprite.texture = texture

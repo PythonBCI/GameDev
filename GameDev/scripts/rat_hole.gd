@@ -38,12 +38,12 @@ func spawn_rat():
 	rat.add_to_group("rats")
 	rat.add_to_group("animals")
 	
-	# Add rat sprite
-	var sprite = Sprite2D.new()
-	var texture = GradientTexture2D.new()
-	var gradient = Gradient.new()
-	gradient.colors = PackedColorArray(Color(0.4, 0.3, 0.2), Color(0.2, 0.1, 0.05))
-	texture.gradient = gradient
+			# Add rat sprite
+		var sprite = Sprite2D.new()
+		var texture = GradientTexture2D.new()
+		var gradient = Gradient.new()
+		gradient.colors = PackedColorArray([Color(0.4, 0.3, 0.2), Color(0.2, 0.1, 0.05)])
+		texture.gradient = gradient
 	texture.width = 10
 	texture.height = 6
 	sprite.texture = texture

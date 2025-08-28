@@ -72,14 +72,14 @@ func return_to_hive():
 		return
 	
 	current_task = "returning"
-	return_to_hive = true
+	var return_to_hive_flag = true
 	move_to(hive_core.global_position)
 
 func _on_movement_finished():
 	if current_task == "gathering" and target_resource:
 		# Reached resource, start gathering
 		start_gathering()
-	elif current_task == "returning" and return_to_hive:
+	elif current_task == "returning":
 		# Reached hive, deposit resources
 		deposit_resources()
 
@@ -131,7 +131,7 @@ func deposit_resources():
 	# Clear carried resources
 	carried_resources.clear()
 	is_carrying = false
-	return_to_hive = false
+	var return_to_hive_flag = false
 	current_task = "idle"
 	
 	# Look for new resources
