@@ -91,6 +91,9 @@ func get_resource_amount() -> int:
 func get_gather_amount() -> int:
 	return 1  # Units collect 1 at a time
 
+func gather_amount() -> int:
+	return 1  # Units collect 1 at a time
+
 func gather_resource(amount: int):
 	if not can_be_gathered():
 		return false
