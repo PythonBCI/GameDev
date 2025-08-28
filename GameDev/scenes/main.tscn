@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://bqxvhxqxqxqxq"]
+[gd_scene load_steps=9 format=3 uid="uid://bqxvhxqxqxqxq"]
 
 [ext_resource type="Script" path="res://scripts/game_manager.gd" id="1_0k8m2"]
 [ext_resource type="Script" path="res://scripts/hive_core.gd" id="2_1k9n3"]
@@ -89,6 +89,13 @@ script = ExtResource("7_6p4s8")
 [node name="CorruptionLayer" type="TileMap" parent="."]
 format = 2
 cell_size = Vector2i(16, 16)
+
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
+navigation_polygon = SubResource("NavigationPolygon2D_1")
+
+[sub_resource type="NavigationPolygon2D" id="NavigationPolygon2D_1"]
+vertices = PackedVector2Array(0, 0, 1280, 0, 1280, 720, 0, 720)
+polygons = [PackedInt32Array(0, 1, 2, 3)]
 
 [node name="Units" type="Node2D" parent="."]
 
@@ -294,6 +301,10 @@ texture = SubResource("GradientTexture2D_3")
 [node name="Camera2D" type="Camera2D" parent="."]
 enabled = true
 zoom = Vector2(1, 1)
+
+[sub_resource type="NavigationPolygon2D" id="NavigationPolygon2D_1"]
+vertices = PackedVector2Array(0, 0, 1280, 0, 1280, 720, 0, 720)
+polygons = [PackedInt32Array(0, 1, 2, 3)]
 
 [sub_resource type="LabelSettings" id="LabelSettings_1"]
 font_size = 16
