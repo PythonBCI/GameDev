@@ -17,6 +17,37 @@ size = Vector2(16, 16)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3"]
 size = Vector2(24, 24)
 
+[sub_resource type="Gradient" id="Gradient_1"]
+colors = PackedColorArray(0.8, 0.2, 0.8, 1, 0.6, 0.1, 0.6, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_1"]
+gradient = SubResource("Gradient_1")
+width = 32
+height = 32
+
+[sub_resource type="Gradient" id="Gradient_2"]
+colors = PackedColorArray(0.2, 0.8, 0.2, 1, 0.1, 0.6, 0.1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_2"]
+gradient = SubResource("Gradient_2")
+width = 16
+height = 16
+
+[sub_resource type="Gradient" id="Gradient_3"]
+colors = PackedColorArray(0.6, 0.6, 0.6, 1, 0.4, 0.4, 0.4, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_3"]
+gradient = SubResource("Gradient_3")
+width = 16
+height = 16
+
+[sub_resource type="TileSet" id="TileSet_1"]
+tile_size = Vector2i(16, 16)
+
+[sub_resource type="NavigationPolygon2D" id="NavigationPolygon2D_1"]
+vertices = PackedVector2Array(0, 0, 1280, 0, 1280, 720, 0, 720)
+polygons = [PackedInt32Array(0, 1, 2, 3)]
+
 [node name="Main" type="Node2D"]
 
 [node name="TileMap" type="TileMap" parent="."]
@@ -87,6 +118,17 @@ script = ExtResource("4_3m1p5")
 shape = SubResource("RectangleShape2D_3")
 
 [node name="Sprite2D" type="Sprite2D" parent="Enemies/Enemy1"]
+modulate = Color(0.8, 0.4, 0.2, 1)
+texture = SubResource("GradientTexture2D_2")
+
+[node name="Enemy2" type="CharacterBody2D" parent="Enemies"]
+position = Vector2(900, 200)
+script = ExtResource("4_3m1p5")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemies/Enemy2"]
+shape = SubResource("RectangleShape2D_3")
+
+[node name="Sprite2D" type="Sprite2D" parent="Enemies/Enemy2"]
 modulate = Color(0.8, 0.4, 0.2, 1)
 texture = SubResource("GradientTexture2D_2")
 
@@ -234,34 +276,3 @@ script = ExtResource("1_0k8m2")
 
 [node name="WorldBuilder" type="Node" parent="."]
 script = ExtResource("7_6p4s8")
-
-[sub_resource type="Gradient" id="Gradient_1"]
-colors = PackedColorArray(0.8, 0.2, 0.8, 1, 0.6, 0.1, 0.6, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_1"]
-gradient = SubResource("Gradient_1")
-width = 32
-height = 32
-
-[sub_resource type="Gradient" id="Gradient_2"]
-colors = PackedColorArray(0.2, 0.8, 0.2, 1, 0.1, 0.6, 0.1, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_2"]
-gradient = SubResource("Gradient_2")
-width = 16
-height = 16
-
-[sub_resource type="Gradient" id="Gradient_3"]
-colors = PackedColorArray(0.6, 0.6, 0.6, 1, 0.4, 0.4, 0.4, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_3"]
-gradient = SubResource("Gradient_3")
-width = 16
-height = 16
-
-[sub_resource type="TileSet" id="TileSet_1"]
-tile_size = Vector2i(16, 16)
-
-[sub_resource type="NavigationPolygon2D" id="NavigationPolygon2D_1"]
-vertices = PackedVector2Array(0, 0, 1280, 0, 1280, 720, 0, 720)
-polygons = [PackedInt32Array(0, 1, 2, 3)]
