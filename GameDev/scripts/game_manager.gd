@@ -228,3 +228,16 @@ func is_game_active() -> bool:
 
 func get_victory_time_remaining() -> float:
 	return max(0, victory_time - game_time)
+
+func get_world_builder() -> Node:
+	return get_node("../WorldBuilder")
+
+func get_corruption_percentage() -> int:
+	var corruption_system = get_node("../CorruptionSystem")
+	if corruption_system and corruption_system.has_method("get_corruption_coverage"):
+		return int(corruption_system.get_corruption_coverage() * 100)
+	return 0
+
+func get_nest_count() -> int:
+	var nests = get_tree().get_nodes_in_group("nests")
+	return nests.size()

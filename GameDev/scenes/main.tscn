@@ -167,6 +167,7 @@ shape = SubResource("RectangleShape2D_2")
 shape = SubResource("RectangleShape2D_2")
 
 [node name="UI" type="CanvasLayer" parent="."]
+script = ExtResource("4_3m1p5")
 
 [node name="ResourceDisplay" type="Control" parent="UI"]
 layout_mode = 3
