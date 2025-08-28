@@ -113,9 +113,53 @@ script = ExtResource("6_5o3r7")
 
 [node name="Sprite2D" type="Sprite2D" parent="Resources/MineralsNode1"]
 modulate = Color(0.6, 0.6, 0.6, 1)
-texture = SubResource("GradientTexture2D_3")
+texture = SubResource("GradientTexture2D_2")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Resources/MineralsNode1"]
+shape = SubResource("RectangleShape2D_2")
+
+[node name="BiomassNode2" type="StaticBody2D" parent="Resources"]
+position = Vector2(200, 500)
+script = ExtResource("6_5o3r7")
+
+[node name="Sprite2D" type="Sprite2D" parent="Resources/BiomassNode2"]
+modulate = Color(0.2, 0.8, 0.2, 1)
+texture = SubResource("GradientTexture2D_2")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Resources/BiomassNode2"]
+shape = SubResource("RectangleShape2D_2")
+
+[node name="BiomassNode3" type="StaticBody2D" parent="Resources"]
+position = Vector2(1000, 200)
+script = ExtResource("6_5o3r7")
+
+[node name="Sprite2D" type="Sprite2D" parent="Resources/BiomassNode3"]
+modulate = Color(0.2, 0.8, 0.2, 1)
+texture = SubResource("GradientTexture2D_2")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Resources/BiomassNode3"]
+shape = SubResource("RectangleShape2D_2")
+
+[node name="BiomassNode4" type="StaticBody2D" parent="Resources"]
+position = Vector2(300, 150)
+script = ExtResource("6_5o3r7")
+
+[node name="Sprite2D" type="Sprite2D" parent="Resources/BiomassNode4"]
+modulate = Color(0.2, 0.8, 0.2, 1)
+texture = SubResource("GradientTexture2D_2")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Resources/BiomassNode4"]
+shape = SubResource("RectangleShape2D_2")
+
+[node name="BiomassNode5" type="StaticBody2D" parent="Resources"]
+position = Vector2(900, 600)
+script = ExtResource("6_5o3r7")
+
+[node name="Sprite2D" type="Sprite2D" parent="Resources/BiomassNode5"]
+modulate = Color(0.2, 0.8, 0.2, 1)
+texture = SubResource("GradientTexture2D_2")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Resources/BiomassNode5"]
 shape = SubResource("RectangleShape2D_2")
 
 [node name="Enemies" type="Node2D" parent="."]

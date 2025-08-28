@@ -1,69 +1,93 @@
-class_name HiveCore
-extends Structure
+extends StaticBody2D
 
-# Hive Core specific properties
-@export var unit_spawn_timer: Timer
-@export var unit_spawn_rate: float = 5.0  # Spawn unit every 5 seconds
+# Hive core properties
+@export var health: int = 100
+@export var max_health: int = 100
 @export var max_units: int = 20
+@export var spawn_position: Vector2 = Vector2(0, 0)
 
-# Resource storage
-var resources: GameResources
+# Resources
+@onready var resources: GameResources = GameResources.new()
 var current_units: int = 0
 
-# Unit spawning
-var spawn_position: Vector2
+# Spawning
+var spawn_timer: Timer
+var spawn_interval: float = 10.0
+var spawn_cost: int = 5
+
+# Unit scenes
 var unit_scenes: Dictionary = {}
 
 func _ready():
-	super._ready()
-	structure_type = StructureType.HIVE_CORE
-	health = 200
-	max_health = 200
-	is_constructed = true  # Hive Core starts constructed
+	# Initialize resources
+	resources.biomass = 10
+	resources.minerals = 5
 	
-	setup_hive_core()
-	add_to_group("hive_core")
-
-func setup_hive_core():
-	# Initialize resource storage
-	resources = GameResources.new()
-	
-	# Set spawn position (slightly offset from core)
+	# Setup spawn position
 	spawn_position = global_position + Vector2(32, 0)
 	
-	# Setup unit spawning
-	setup_unit_spawning()
+	# Setup spawning
+	setup_spawning()
 	
 	# Load unit scenes
 	load_unit_scenes()
+	
+	# Add to groups
+	add_to_group("hive_cores")
+	add_to_group("structures")
 
-func setup_unit_spawning():
-	unit_spawn_timer = Timer.new()
-	unit_spawn_timer.wait_time = unit_spawn_rate
-	unit_spawn_timer.autostart = true
-	unit_spawn_timer.timeout.connect(_on_unit_spawn_timeout)
-	add_child(unit_spawn_timer)
+func setup_spawning():
+	spawn_timer = Timer.new()
+	spawn_timer.wait_time = spawn_interval
+	spawn_timer.one_shot = false
+	spawn_timer.timeout.connect(_on_spawn_timer_timeout)
+	add_child(spawn_timer)
+	spawn_timer.start()
 
 func load_unit_scenes():
-	# Load unit scene files - handle missing scenes gracefully
-	unit_scenes["worker_drone"] = preload("res://scenes/units/worker_drone.tscn")
-	
-	# Try to load other unit scenes, but don't fail if they don't exist
-	var harvester_scene = load("res://scenes/units/harvester.tscn")
-	if harvester_scene:
-		unit_scenes["harvester"] = harvester_scene
-	
-	var queen_scene = load("res://scenes/units/queen.tscn")
-	if queen_scene:
-		unit_scenes["queen"] = queen_scene
-	
-	var larvae_scene = load("res://scenes/units/larvae.tscn")
-	if larvae_scene:
-		unit_scenes["larvae"] = larvae_scene
+	# Load unit scene files
+	var worker_drone_scene = load("res://scenes/units/worker_drone.tscn")
+	if worker_drone_scene:
+		unit_scenes["worker_drone"] = worker_drone_scene
 
-func on_construction_complete():
-	# Hive Core starts constructed, so this won't be called initially
-	pass
+func _on_spawn_timer_timeout():
+	# Auto-spawn worker drones if we have resources and space
+	if current_units < max_units and resources.can_afford(spawn_cost, 0, 0, 0, 0, 0):
+		spawn_unit("worker_drone")
+		resources.spend_resources(spawn_cost, 0, 0, 0, 0, 0)
+
+func spawn_unit(unit_type: String) -> bool:
+	if current_units >= max_units:
+		return false
+	
+	if unit_type in unit_scenes:
+		var unit_scene = unit_scenes[unit_type]
+		var unit_instance = unit_scene.instantiate()
+		
+		# Set spawn position
+		unit_instance.global_position = spawn_position
+		
+		# Add to units container
+		var units_container = get_node("/root/Main/Units")
+		if units_container:
+			units_container.add_child(unit_instance)
+			current_units += 1
+			
+			# Add to hive units group
+			unit_instance.add_to_group("hive_units")
+			
+			return true
+	
+	return false
+
+func manual_spawn_unit(unit_type: String) -> bool:
+	# Manual spawning costs more
+	var cost = spawn_cost * 2
+	if resources.can_afford(cost, 0, 0, 0, 0, 0):
+		if spawn_unit(unit_type):
+			resources.spend_resources(cost, 0, 0, 0, 0, 0)
+			return true
+	return false
 
 func add_resource(resource_type: String, amount: int) -> bool:
 	match resource_type:
@@ -98,41 +122,6 @@ func get_resource_amount(resource_type: String) -> int:
 			return resources.eggs
 		_:
 			return 0
-
-func spawn_unit(unit_type: String) -> bool:
-	if current_units >= max_units:
-		return false
-	
-	if unit_type in unit_scenes:
-		var unit_scene = unit_scenes[unit_type]
-		var unit_instance = unit_scene.instantiate()
-		
-		# Set spawn position
-		unit_instance.global_position = spawn_position
-		
-		# Add to units container
-		var units_container = get_node("/root/Main/Units")
-		if units_container:
-			units_container.add_child(unit_instance)
-			current_units += 1
-			
-			# Add to hive units group
-			unit_instance.add_to_group("hive_units")
-			
-			return true
-	
-	return false
-
-func _on_unit_spawn_timeout():
-	# Auto-spawn worker drones if we have resources
-	if resources.can_afford(1, 0, 0, 0, 0, 0):
-		spawn_unit("worker_drone")
-		resources.spend_resources(1, 0, 0, 0, 0, 0)
-	
-	# Also spawn a worker drone if we have less than 3 units
-	if current_units < 3 and resources.can_afford(1, 0, 0, 0, 0, 0):
-		spawn_unit("worker_drone")
-		resources.spend_resources(1, 0, 0, 0, 0, 0)
 
 func get_total_resources() -> GameResources:
 	return resources
@@ -172,3 +161,19 @@ func on_unit_died():
 	current_units -= 1
 	if current_units < 0:
 		current_units = 0
+
+func take_damage(amount: int):
+	health -= amount
+	if health <= 0:
+		die()
+
+func die():
+	# Game over if hive core is destroyed
+	get_tree().change_scene_to_file("res://scenes/game_over.tscn")
+
+func _input_event(viewport, event, shape_idx):
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		# Click hive core to manually spawn units
+		if resources.can_afford(spawn_cost * 2, 0, 0, 0, 0, 0):
+			manual_spawn_unit("worker_drone")
+			print("Manual spawn triggered! Units: ", current_units)

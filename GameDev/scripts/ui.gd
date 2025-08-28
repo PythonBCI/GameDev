@@ -18,17 +18,27 @@ extends Control
 @onready var units_label: Label = $GameStatus/UnitsLabel
 
 # Game Manager Reference
-var game_manager: GameManager
+var game_manager: Node
+var hive_core: Node
 
 func _ready():
 	# Find game manager
 	game_manager = get_node("/root/Main/GameManager")
+	hive_core = get_node("/root/Main/Structures/HiveCore")
 	
 	# Setup UI
 	setup_ui()
 	
 	# Connect building button signals
 	connect_building_buttons()
+	
+	# Start update timer
+	var update_timer = Timer.new()
+	update_timer.wait_time = 0.5  # Update every 0.5 seconds
+	update_timer.one_shot = false
+	update_timer.timeout.connect(_on_update_timer_timeout)
+	add_child(update_timer)
+	update_timer.start()
 
 func setup_ui():
 	# Initialize labels with default values
@@ -58,15 +68,37 @@ func connect_building_buttons():
 		if buttons.has_node("CreepNodeButton"):
 			buttons.get_node("CreepNodeButton").pressed.connect(_on_creep_node_button_pressed)
 
+func _on_update_timer_timeout():
+	# Update resource display
+	if hive_core and hive_core.has_method("get_total_resources"):
+		var resources = hive_core.get_total_resources()
+		update_resource_display(resources)
+	
+	# Update unit count
+	if hive_core and hive_core.has_method("get_current_units_count"):
+		var unit_count = hive_core.get_current_units_count()
+		update_unit_count(unit_count)
+	
+	# Update game time
+	if game_manager and game_manager.has_method("get_game_time"):
+		var game_time = game_manager.get_game_time()
+		update_game_time(game_time)
+
 func update_resource_display(resources: GameResources):
 	if not resources:
 		return
 	
-	biomass_label.text = "Biomass: " + str(resources.biomass)
-	minerals_label.text = "Minerals: " + str(resources.minerals)
-	genetic_material_label.text = "Genetic: " + str(resources.genetic_material)
-	secretions_label.text = "Secretions: " + str(resources.secretions)
-	eggs_label.text = "Eggs: " + str(resources.eggs)
+	biomass_label.text = "Biomass: " + str(resources.biomass) + "/" + str(resources.BIOMASS_LIMIT)
+	minerals_label.text = "Minerals: " + str(resources.minerals) + "/" + str(resources.MINERALS_LIMIT)
+	genetic_material_label.text = "Genetic: " + str(resources.genetic_material) + "/" + str(resources.GENETIC_MATERIAL_LIMIT)
+	secretions_label.text = "Secretions: " + str(resources.secretions) + "/" + str(resources.SECRETIONS_LIMIT)
+	eggs_label.text = "Eggs: " + str(resources.eggs) + "/" + str(resources.EGGS_LIMIT)
+	
+	# Color coding for low resources
+	if resources.biomass < 5:
+		biomass_label.modulate = Color(1, 0.5, 0.5)  # Red tint for low biomass
+	else:
+		biomass_label.modulate = Color(1, 1, 1)  # Normal color
 
 func update_game_time(seconds: float):
 	var minutes = int(seconds) / 60
@@ -74,7 +106,15 @@ func update_game_time(seconds: float):
 	time_label.text = "Time: " + str(minutes) + ":" + str(remaining_seconds).pad_zeros(2)
 
 func update_unit_count(count: int):
-	units_label.text = "Units: " + str(count)
+	units_label.text = "Units: " + str(count) + "/20"
+	
+	# Color coding for unit count
+	if count >= 18:
+		units_label.modulate = Color(1, 0.5, 0.5)  # Red tint for near capacity
+	elif count >= 15:
+		units_label.modulate = Color(1, 1, 0.5)  # Yellow tint for warning
+	else:
+		units_label.modulate = Color(1, 1, 1)  # Normal color
 
 func show_game_end(message: String, is_victory: bool):
 	# Create game end overlay
@@ -108,60 +148,58 @@ func show_game_end(message: String, is_victory: bool):
 	# Create restart button
 	var restart_button = Button.new()
 	restart_button.text = "Restart Game"
-	restart_button.add_theme_font_size_override("font_size", 20)
-	restart_button.pressed.connect(_on_restart_pressed)
+	restart_button.pressed.connect(_on_restart_button_pressed)
 	message_container.add_child(restart_button)
-	
-	# Create quit button
-	var quit_button = Button.new()
-	quit_button.text = "Quit to Menu"
-	quit_button.add_theme_font_size_override("font_size", 20)
-	quit_button.pressed.connect(_on_quit_pressed)
-	message_container.add_child(quit_button)
 
-func _on_restart_pressed():
-	if game_manager:
-		game_manager.restart_game()
+func _on_restart_button_pressed():
+	get_tree().reload_current_scene()
 
-func _on_quit_pressed():
-	# Return to main menu or quit game
-	get_tree().quit()
-
-func update_ui():
-	if game_manager:
-		# Update resource display
-		update_resource_display(game_manager.get_current_resources())
-		
-		# Update game time
-		update_game_time(game_manager.get_game_time())
-		
-		# Update unit count
-		if game_manager.hive_core:
-			update_unit_count(game_manager.hive_core.get_current_units_count())
-
-func _process(delta):
-	# Update UI every frame
-	update_ui()
-
-# Building button signal handlers
+# Button signal handlers
 func _on_worker_drone_button_pressed():
 	print("Worker Drone button pressed")
-	# The world builder will handle the actual building logic
+	if game_manager and game_manager.has_method("get_world_builder"):
+		var world_builder = game_manager.get_world_builder()
+		if world_builder:
+			world_builder.start_building_mode(world_builder.BuildMode.UNIT, "worker_drone")
 
 func _on_harvester_button_pressed():
 	print("Harvester button pressed")
+	if game_manager and game_manager.has_method("get_world_builder"):
+		var world_builder = game_manager.get_world_builder()
+		if world_builder:
+			world_builder.start_building_mode(world_builder.BuildMode.UNIT, "harvester")
 
 func _on_queen_button_pressed():
 	print("Queen button pressed")
+	if game_manager and game_manager.has_method("get_world_builder"):
+		var world_builder = game_manager.get_world_builder()
+		if world_builder:
+			world_builder.start_building_mode(world_builder.BuildMode.UNIT, "queen")
 
 func _on_larvae_button_pressed():
 	print("Larvae button pressed")
+	if game_manager and game_manager.has_method("get_world_builder"):
+		var world_builder = game_manager.get_world_builder()
+		if world_builder:
+			world_builder.start_building_mode(world_builder.BuildMode.UNIT, "larvae")
 
 func _on_spire_button_pressed():
 	print("Spire button pressed")
+	if game_manager and game_manager.has_method("get_world_builder"):
+		var world_builder = game_manager.get_world_builder()
+		if world_builder:
+			world_builder.start_building_mode(world_builder.BuildMode.STRUCTURE, "spire")
 
 func _on_nursery_button_pressed():
 	print("Nursery button pressed")
+	if game_manager and game_manager.has_method("get_world_builder"):
+		var world_builder = game_manager.get_world_builder()
+		if world_builder:
+			world_builder.start_building_mode(world_builder.BuildMode.STRUCTURE, "nursery")
 
 func _on_creep_node_button_pressed():
 	print("Creep Node button pressed")
+	if game_manager and game_manager.has_method("get_world_builder"):
+		var world_builder = game_manager.get_world_builder()
+		if world_builder:
+			world_builder.start_building_mode(world_builder.BuildMode.STRUCTURE, "creep_node")
