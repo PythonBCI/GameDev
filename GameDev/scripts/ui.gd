@@ -90,7 +90,10 @@ func show_game_end(message: String, is_victory: bool):
 	
 	# Create title label
 	var title_label = Label.new()
-	title_label.text = "VICTORY!" if is_victory else "DEFEAT!"
+	if is_victory:
+		title_label.text = "VICTORY!"
+	else:
+		title_label.text = "DEFEAT!"
 	title_label.add_theme_font_size_override("font_size", 48)
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	message_container.add_child(title_label)

@@ -50,6 +50,16 @@ polygons = [PackedInt32Array(0, 1, 2, 3)]
 
 [node name="Main" type="Node2D"]
 
+[node name="Background" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -640.0
+offset_top = -360.0
+offset_right = 640.0
+offset_bottom = 360.0
+color = Color(0.2, 0.6, 0.2, 1)
+
 [node name="TileMap" type="TileMap" parent="."]
 format = 2
 tile_set = SubResource("TileSet_1")
@@ -224,7 +234,7 @@ layout_mode = 2
 text = "Larvae (1 Secretion)"
 
 [node name="Spacer1" type="Control" parent="UI/BuildingButtons/VBoxContainer"]
-layout_mode = 2
+layout_mode = 0
 custom_minimum_size = Vector2(0, 20)
 
 [node name="Label2" type="Label" parent="UI/BuildingButtons/VBoxContainer"]

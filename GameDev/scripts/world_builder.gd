@@ -125,7 +125,10 @@ func update_build_preview(position: Vector2):
 	
 	# Check if we can build here
 	can_build = check_build_position(position)
-	build_preview.modulate = Color(0, 1, 0, 0.5) if can_build else Color(1, 0, 0, 0.5)
+	if can_build:
+		build_preview.modulate = Color(0, 1, 0, 0.5)
+	else:
+		build_preview.modulate = Color(1, 0, 0, 0.5)
 
 func check_build_position(position: Vector2) -> bool:
 	# Check if position is valid for building
