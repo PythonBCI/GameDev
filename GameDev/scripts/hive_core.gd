@@ -125,14 +125,14 @@ func spawn_unit(unit_type: String) -> bool:
 
 func _on_unit_spawn_timeout():
 	# Auto-spawn worker drones if we have resources
-	if resources.can_afford(biomass_cost=1):
+	if resources.can_afford(1, 0, 0, 0, 0, 0):
 		spawn_unit("worker_drone")
-		resources.spend_resources(biomass_cost=1)
+		resources.spend_resources(1, 0, 0, 0, 0, 0)
 	
 	# Also spawn a worker drone if we have less than 3 units
-	if current_units < 3 and resources.can_afford(biomass_cost=1):
+	if current_units < 3 and resources.can_afford(1, 0, 0, 0, 0, 0):
 		spawn_unit("worker_drone")
-		resources.spend_resources(biomass_cost=1)
+		resources.spend_resources(1, 0, 0, 0, 0, 0)
 
 func get_total_resources() -> GameResources:
 	return resources

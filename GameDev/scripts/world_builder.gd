@@ -323,62 +323,56 @@ func can_afford_unit(unit_type: String) -> bool:
 		return false
 	
 	var costs = unit_costs.get(unit_type, {})
-	return game_manager.resources.can_afford(
-		biomass_cost=costs.get("biomass", 0),
-		genetic_material_cost=costs.get("genetic_material", 0),
-		secretions_cost=costs.get("secretions", 0)
-	)
+	var biomass_cost = costs.get("biomass", 0)
+	var genetic_cost = costs.get("genetic_material", 0)
+	var secretions_cost = costs.get("secretions", 0)
+	return game_manager.resources.can_afford(biomass_cost, 0, genetic_cost, 0, secretions_cost, 0)
 
 func can_afford_structure(structure_type: String) -> bool:
 	if not game_manager or not game_manager.resources:
 		return false
 	
 	var costs = structure_costs.get(structure_type, {})
-	return game_manager.resources.can_afford(
-		biomass_cost=costs.get("biomass", 0),
-		minerals_cost=costs.get("minerals", 0)
-	)
+	var biomass_cost = costs.get("biomass", 0)
+	var minerals_cost = costs.get("minerals", 0)
+	return game_manager.resources.can_afford(biomass_cost, 0, 0, minerals_cost, 0, 0)
 
 func can_afford_resource(resource_type: String) -> bool:
 	if not game_manager or not game_manager.resources:
 		return false
 	
 	var costs = resource_costs.get(resource_type, {})
-	return game_manager.resources.can_afford(
-		biomass_cost=costs.get("biomass", 0),
-		minerals_cost=costs.get("minerals", 0)
-	)
+	var biomass_cost = costs.get("biomass", 0)
+	var minerals_cost = costs.get("minerals", 0)
+	return game_manager.resources.can_afford(biomass_cost, 0, 0, minerals_cost, 0, 0)
 
 func spend_unit_resources(unit_type: String):
 	if not game_manager or not game_manager.resources:
 		return
 	
 	var costs = unit_costs.get(unit_type, {})
-	game_manager.resources.spend_resources(
-		biomass_cost=costs.get("biomass", 0),
-		genetic_material_cost=costs.get("genetic_material", 0),
-		secretions_cost=costs.get("secretions", 0)
-	)
+	var biomass_cost = costs.get("biomass", 0)
+	var genetic_cost = costs.get("genetic_material", 0)
+	var secretions_cost = costs.get("secretions", 0)
+	game_manager.resources.spend_resources(biomass_cost, 0, genetic_cost, 0, secretions_cost, 0)
 
 func spend_structure_resources(structure_type: String):
 	if not game_manager or not game_manager.resources:
 		return
 	
 	var costs = structure_costs.get(structure_type, {})
-	game_manager.resources.spend_resources(
-		biomass_cost=costs.get("biomass", 0),
-		minerals_cost=costs.get("minerals", 0)
-	)
+	var biomass_cost = costs.get("biomass", 0)
+	var minerals_cost = costs.get("minerals", 0)
+	game_manager.resources.spend_resources(biomass_cost, 0, 0, minerals_cost, 0, 0)
 
 func spend_resource_resources(resource_type: String):
 	if not game_manager or not game_manager.resources:
 		return
 	
 	var costs = resource_costs.get(resource_type, {})
-	game_manager.resources.spend_resources(
-		biomass_cost=costs.get("biomass", 0),
-		minerals_cost=costs.get("minerals", 0)
-	)
+	var biomass_cost = costs.get("biomass", 0)
+	var minerals_cost = costs.get("minerals", 0)
+	game_manager.resources.spend_resources(biomass_cost, 0, 0, minerals_cost, 0, 0)
 
 # Button signal handlers
 func _on_worker_drone_button_pressed():
