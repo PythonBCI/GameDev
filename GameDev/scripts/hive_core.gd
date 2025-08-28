@@ -45,11 +45,21 @@ func setup_unit_spawning():
 	add_child(unit_spawn_timer)
 
 func load_unit_scenes():
-	# Load unit scene files
+	# Load unit scene files - handle missing scenes gracefully
 	unit_scenes["worker_drone"] = preload("res://scenes/units/worker_drone.tscn")
-	unit_scenes["harvester"] = preload("res://scenes/units/harvester.tscn")
-	unit_scenes["queen"] = preload("res://scenes/units/queen.tscn")
-	unit_scenes["larvae"] = preload("res://scenes/units/larvae.tscn")
+	
+	# Try to load other unit scenes, but don't fail if they don't exist
+	var harvester_scene = load("res://scenes/units/harvester.tscn")
+	if harvester_scene:
+		unit_scenes["harvester"] = harvester_scene
+	
+	var queen_scene = load("res://scenes/units/queen.tscn")
+	if queen_scene:
+		unit_scenes["queen"] = queen_scene
+	
+	var larvae_scene = load("res://scenes/units/larvae.tscn")
+	if larvae_scene:
+		unit_scenes["larvae"] = larvae_scene
 
 func on_construction_complete():
 	# Hive Core starts constructed, so this won't be called initially

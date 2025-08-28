@@ -1,17 +1,17 @@
-[gd_scene load_steps=4 format=3 uid="uid://e0xvhxqxqxqxq"]
+[gd_scene load_steps=4 format=3 uid="uid://d9xvhxqxqxqxq"]
 
 [ext_resource type="Script" path="res://scripts/queen.gd" id="1_queen"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_queen"]
-size = Vector2(32, 32)
+size = Vector2(28, 28)
 
 [sub_resource type="Gradient" id="Gradient_queen"]
-colors = PackedColorArray(0.8, 0.8, 0.2, 1, 0.6, 0.6, 0.1, 1)
+colors = PackedColorArray(0.6, 0.2, 0.8, 1, 0.4, 0.1, 0.6, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_queen"]
 gradient = SubResource("Gradient_queen")
-width = 32
-height = 32
+width = 28
+height = 28
 
 [node name="Queen" type="CharacterBody2D"]
 script = ExtResource("1_queen")
@@ -20,6 +20,7 @@ script = ExtResource("1_queen")
 shape = SubResource("RectangleShape2D_queen")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(0.6, 0.2, 0.8, 1)
 texture = SubResource("GradientTexture2D_queen")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]

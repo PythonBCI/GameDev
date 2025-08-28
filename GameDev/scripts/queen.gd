@@ -2,127 +2,154 @@ class_name Queen
 extends Unit
 
 # Queen specific properties
-var egg_production_timer: Timer
-var egg_production_rate: float = 10.0  # 1 egg per 10 seconds
-var buff_radius: float = 128.0  # 128 pixels as per spec
-var buff_timer: Timer
-var buff_duration: float = 5.0
-var buff_cooldown: float = 15.0
-
-# Buff system
-var buffed_units: Array[Node] = []
-var is_buffing: bool = false
+var egg_laying_timer: Timer
+var egg_laying_rate: float = 10.0  # Lay eggs every 10 seconds
+var max_eggs_per_lay: int = 3
+var egg_laying_cost: int = 2  # Secretions cost per egg
 
 func _ready():
 	super._ready()
 	unit_type = UnitType.QUEEN
-	speed = 0.0  # Stationary as per spec
-	carry_capacity = 0  # Queen doesn't carry resources
+	speed = 24.0  # 24 pixels/second as per spec
+	carry_capacity = 3
+	health = 300
+	max_health = 300
 	
-	setup_queen_systems()
+	# Add to hive units group
+	add_to_group("hive_units")
+	
+	# Setup egg laying
+	setup_egg_laying()
 
-func setup_queen_systems():
-	# Egg production timer
-	egg_production_timer = Timer.new()
-	egg_production_timer.wait_time = egg_production_rate
-	egg_production_timer.autostart = true
-	egg_production_timer.timeout.connect(_on_egg_production_timeout)
-	add_child(egg_production_timer)
-	
-	# Buff timer
-	buff_timer = Timer.new()
-	buff_timer.wait_time = buff_cooldown
-	buff_timer.autostart = true
-	buff_timer.timeout.connect(_on_buff_cooldown_timeout)
-	add_child(buff_timer)
+func setup_egg_laying():
+	egg_laying_timer = Timer.new()
+	egg_laying_timer.wait_time = egg_laying_rate
+	egg_laying_timer.autostart = true
+	egg_laying_timer.timeout.connect(_on_egg_laying_timeout)
+	add_child(egg_laying_timer)
 
 func check_for_tasks():
-	# Queen is stationary, so no movement tasks
-	# Just check if buff can be activated
-	if not is_buffing and buff_timer.is_stopped():
-		activate_area_buff()
+	if is_carrying:
+		# If carrying resources, return to hive
+		if not return_to_hive:
+			return_to_hive = true
+			move_to(hive_core.global_position)
+	else:
+		# Queens primarily lay eggs and manage the hive
+		# They can also gather resources if needed
+		if should_lay_eggs():
+			lay_eggs()
+		else:
+			# Look for resources to gather
+			find_nearest_resource()
 
-func activate_area_buff():
-	if not game_manager.resources.can_afford(secretions_cost=5):
+func should_lay_eggs() -> bool:
+	# Check if we have enough secretions and are near the hive
+	if not hive_core:
+		return false
+	
+	var distance_to_hive = global_position.distance_to(hive_core.global_position)
+	if distance_to_hive > 64:  # Must be close to hive to lay eggs
+		return false
+	
+	# Check if we have enough secretions
+	if hive_core.has_method("get_resource_amount"):
+		var secretions = hive_core.get_resource_amount("secretions")
+		return secretions >= egg_laying_cost
+	return false
+
+func lay_eggs():
+	# Move to hive if not already there
+	if global_position.distance_to(hive_core.global_position) > 32:
+		move_to(hive_core.global_position)
 		return
 	
-	# Spend secretions for buff
-	game_manager.resources.spend_resources(secretions_cost=5)
+	# Lay eggs
+	var eggs_to_lay = min(max_eggs_per_lay, 3)  # Max 3 eggs per laying
 	
-	is_buffing = true
-	change_state(UnitState.ATTACKING)  # Use action animation for buff
-	
-	# Find units in buff radius
-	var units = get_tree().get_nodes_in_group("hive_units")
-	for unit in units:
-		if global_position.distance_to(unit.global_position) <= buff_radius:
-			apply_buff_to_unit(unit)
-	
-	# Start buff duration timer
-	var buff_duration_timer = Timer.new()
-	buff_duration_timer.wait_time = buff_duration
-	buff_duration_timer.one_shot = true
-	buff_duration_timer.timeout.connect(_on_buff_duration_timeout)
-	add_child(buff_duration_timer)
-	buff_duration_timer.start()
-
-func apply_buff_to_unit(unit: Node):
-	if unit.has_method("apply_queen_buff"):
-		unit.apply_queen_buff()
-		buffed_units.append(unit)
-
-func remove_buff_from_unit(unit: Node):
-	if unit.has_method("remove_queen_buff"):
-		unit.remove_queen_buff()
-		buffed_units.erase(unit)
-
-func _on_buff_duration_timeout():
-	# Remove buffs from all units
-	for unit in buffed_units:
-		remove_buff_from_unit(unit)
-	
-	buffed_units.clear()
-	is_buffing = false
-	change_state(UnitState.IDLE)
-	
-	# Start cooldown
-	buff_timer.start()
-
-func _on_buff_cooldown_timeout():
-	# Buff is ready again
-	pass
-
-func _on_egg_production_timeout():
-	# Check if we can produce an egg
-	if game_manager.resources.can_afford(biomass_cost=2, genetic_material_cost=1):
-		# Spend resources
-		game_manager.resources.spend_resources(biomass_cost=2, genetic_material_cost=1)
+	if hive_core.has_method("get_resource_amount"):
+		var secretions = hive_core.get_resource_amount("secretions")
+		eggs_to_lay = min(eggs_to_lay, secretions / egg_laying_cost)
 		
-		# Add egg to hive
-		game_manager.resources.add_eggs(1)
-		
-		# Play egg laying animation
-		change_state(UnitState.ATTACKING)
-		
-		# Return to idle after animation
-		var animation_timer = Timer.new()
-		animation_timer.wait_time = 0.4  # 0.4 second action duration
-		animation_timer.one_shot = true
-		animation_timer.timeout.connect(_on_egg_laying_complete)
-		add_child(animation_timer)
-		animation_timer.start()
+		if eggs_to_lay > 0:
+			# Spend secretions and add eggs
+			if hive_core.has_method("add_resource"):
+				hive_core.add_resource("eggs", eggs_to_lay)
+				hive_core.add_resource("secretions", -eggs_to_lay * egg_laying_cost)
+				
+				print("Queen laid ", eggs_to_lay, " eggs")
+				
+				# Start egg laying cooldown
+				egg_laying_timer.start()
+
+func _on_egg_laying_timeout():
+	# Reset egg laying timer
+	egg_laying_timer.start()
+
+func _on_movement_finished():
+	if return_to_hive and global_position.distance_to(hive_core.global_position) < 16.0:
+		_on_hive_reached()
+	elif gathering_target and global_position.distance_to(gathering_target.global_position) < 16.0:
+		start_gathering(gathering_target)
 	else:
-		# Not enough resources, wait longer
-		egg_production_timer.wait_time = egg_production_rate * 2
+		change_state(UnitState.IDLE)
 
-func _on_egg_laying_complete():
-	change_state(UnitState.IDLE)
+func _on_resource_reached():
+	if gathering_target and not is_carrying:
+		start_gathering(gathering_target)
 
-func get_buff_radius() -> float:
-	return buff_radius
+func start_gathering(resource_node: Node):
+	gathering_target = resource_node
+	change_state(UnitState.GATHERING)
 
-func is_buff_active() -> bool:
-	return is_buffing
+func complete_gathering():
+	if gathering_target and gathering_target.has_method("can_be_gathered"):
+		if gathering_target.can_be_gathered():
+			var resource_type = gathering_target.get_resource_type_name()
+			var amount = min(1, gathering_target.get_resource_amount())
+			
+			if amount > 0:
+				add_carried_resource(resource_type, amount)
+				return_to_hive = true
+				move_to(hive_core.global_position)
+			else:
+				# Resource depleted, find another
+				gathering_target = null
+				change_state(UnitState.IDLE)
+		else:
+			change_state(UnitState.IDLE)
+	else:
+		change_state(UnitState.IDLE)
 
-func get_buffed_units_count() -> int:
-	return buffed_units.size()
+func _on_hive_reached():
+	if is_carrying:
+		# Deposit resources
+		for resource_type in carried_resources:
+			var amount = carried_resources[resource_type]
+			if hive_core and hive_core.has_method("add_resource"):
+				hive_core.add_resource(resource_type, amount)
+		
+		# Clear carried resources
+		carried_resources.clear()
+		is_carrying = false
+		return_to_hive = false
+		
+		# Return to idle state
+		change_state(UnitState.IDLE)
+
+# Override resource gathering for queens
+func find_nearest_resource():
+	var resources = get_tree().get_nodes_in_group("resources")
+	var nearest_distance = INF
+	nearest_resource = null
+	
+	for resource in resources:
+		if resource.has_method("can_be_gathered") and resource.can_be_gathered():
+			var distance = global_position.distance_to(resource.global_position)
+			if distance < nearest_distance:
+				nearest_distance = distance
+				nearest_resource = resource
+	
+	if nearest_resource:
+		move_to(nearest_resource.global_position)
+		gathering_target = nearest_resource

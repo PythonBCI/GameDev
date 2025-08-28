@@ -12,7 +12,7 @@ enum GameState {PLAYING, VICTORY, DEFEAT, PAUSED}
 var resources: GameResources
 var hive_core: HiveCore
 
-# Game systems
+# Game systems (placeholder nodes for now)
 var pheromone_system: Node
 var creep_system: Node
 var evolution_system: Node
@@ -38,11 +38,28 @@ func setup_game_systems():
 	# Find hive core
 	hive_core = get_node("../Structures/HiveCore")
 	
+	# Setup placeholder systems
+	setup_placeholder_systems()
+	
 	# Setup timers
 	setup_timers()
 	
 	# Setup UI
 	setup_ui()
+
+func setup_placeholder_systems():
+	# Create placeholder systems for now
+	pheromone_system = Node.new()
+	pheromone_system.name = "PheromoneSystem"
+	add_child(pheromone_system)
+	
+	creep_system = Node.new()
+	creep_system.name = "CreepSystem"
+	add_child(creep_system)
+	
+	evolution_system = Node.new()
+	evolution_system.name = "EvolutionSystem"
+	add_child(evolution_system)
 
 func setup_timers():
 	# Main game timer
@@ -102,19 +119,21 @@ func _on_secretion_generation():
 func generate_secretions():
 	var units = get_tree().get_nodes_in_group("hive_units")
 	for unit in units:
-		if unit.is_alive():
+		if unit.has_method("is_alive") and unit.is_alive():
 			resources.add_secretions(1)
 
 func check_victory_conditions():
 	# Check territory control (creep covers 75% of playable area)
-	if creep_system and creep_system.get_creep_coverage() >= 0.75:
-		trigger_victory("Territory Control Achieved!")
-		return
+	if creep_system and creep_system.has_method("get_creep_coverage"):
+		if creep_system.get_creep_coverage() >= 0.75:
+			trigger_victory("Territory Control Achieved!")
+			return
 	
 	# Check population goal (50+ active units)
-	if hive_core and hive_core.get_current_units_count() >= 50:
-		trigger_victory("Population Goal Achieved!")
-		return
+	if hive_core and hive_core.has_method("get_current_units_count"):
+		if hive_core.get_current_units_count() >= 50:
+			trigger_victory("Population Goal Achieved!")
+			return
 	
 	# Check survival time (300 seconds)
 	if game_time >= victory_time:
@@ -130,9 +149,10 @@ func check_defeat_conditions():
 		return
 	
 	# Check population collapse
-	if hive_core.get_current_units_count() < 3:
-		trigger_defeat("Population Collapsed!")
-		return
+	if hive_core.has_method("get_current_units_count"):
+		if hive_core.get_current_units_count() < 3:
+			trigger_defeat("Population Collapsed!")
+			return
 	
 	# Check resource depletion
 	if is_resources_depleted():
@@ -144,7 +164,7 @@ func is_resources_depleted() -> bool:
 	var all_depleted = true
 	
 	for node in resource_nodes:
-		if not node.is_fully_depleted():
+		if node.has_method("is_fully_depleted") and not node.is_fully_depleted():
 			all_depleted = false
 			break
 	
@@ -163,19 +183,20 @@ func trigger_defeat(message: String):
 	show_game_end_screen(message, false)
 
 func show_game_end_screen(message: String, is_victory: bool):
-	if game_status:
+	if game_status and game_status.has_method("show_game_end"):
 		game_status.show_game_end(message, is_victory)
 	
 	# Pause game
 	get_tree().paused = true
 
 func update_ui():
-	if resource_display:
-		resource_display.update_display(resources)
+	if resource_display and resource_display.has_method("update_resource_display"):
+		resource_display.update_resource_display(resources)
 	
-	if game_status:
+	if game_status and game_status.has_method("update_game_time"):
 		game_status.update_game_time(game_time)
-		game_status.update_unit_count(hive_core.get_current_units_count() if hive_core else 0)
+		if hive_core and hive_core.has_method("get_current_units_count"):
+			game_status.update_unit_count(hive_core.get_current_units_count())
 
 func pause_game():
 	if current_game_state == GameState.PLAYING:

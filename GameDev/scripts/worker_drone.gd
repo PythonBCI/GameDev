@@ -31,7 +31,7 @@ func find_nearest_resource():
 	nearest_resource = null
 	
 	for resource in resources:
-		if resource.can_be_gathered():
+		if resource.has_method("can_be_gathered") and resource.can_be_gathered():
 			var distance = global_position.distance_to(resource.global_position)
 			if distance < nearest_distance:
 				nearest_distance = distance
@@ -50,17 +50,20 @@ func start_gathering(resource_node: Node):
 	change_state(UnitState.GATHERING)
 
 func complete_gathering():
-	if gathering_target and gathering_target.can_be_gathered():
-		var resource_type = gathering_target.get_resource_type_name()
-		var amount = gathering_target.get_resource_amount()
-		
-		if amount > 0:
-			add_carried_resource(resource_type, 1)
-			return_to_hive = true
-			move_to(hive_core.global_position)
+	if gathering_target and gathering_target.has_method("can_be_gathered"):
+		if gathering_target.can_be_gathered():
+			var resource_type = gathering_target.get_resource_type_name()
+			var amount = gathering_target.get_resource_amount()
+			
+			if amount > 0:
+				add_carried_resource(resource_type, 1)
+				return_to_hive = true
+				move_to(hive_core.global_position)
+			else:
+				# Resource depleted, find another
+				gathering_target = null
+				change_state(UnitState.IDLE)
 		else:
-			# Resource depleted, find another
-			gathering_target = null
 			change_state(UnitState.IDLE)
 	else:
 		change_state(UnitState.IDLE)
@@ -70,7 +73,8 @@ func _on_hive_reached():
 		# Deposit resources
 		for resource_type in carried_resources:
 			var amount = carried_resources[resource_type]
-			hive_core.add_resource(resource_type, amount)
+			if hive_core and hive_core.has_method("add_resource"):
+				hive_core.add_resource(resource_type, amount)
 		
 		# Clear carried resources
 		carried_resources.clear()

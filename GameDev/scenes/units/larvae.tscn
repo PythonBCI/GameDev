@@ -1,17 +1,17 @@
-[gd_scene load_steps=4 format=3 uid="uid://f1xvhxqxqxqxq"]
+[gd_scene load_steps=4 format=3 uid="uid://e0xvhxqxqxqxq"]
 
 [ext_resource type="Script" path="res://scripts/larvae.gd" id="1_larvae"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_larvae"]
-size = Vector2(16, 16)
+size = Vector2(12, 12)
 
 [sub_resource type="Gradient" id="Gradient_larvae"]
-colors = PackedColorArray(0.6, 0.8, 0.6, 1, 0.4, 0.6, 0.4, 1)
+colors = PackedColorArray(0.8, 0.8, 0.2, 1, 0.6, 0.6, 0.1, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_larvae"]
 gradient = SubResource("Gradient_larvae")
-width = 16
-height = 16
+width = 12
+height = 12
 
 [node name="Larvae" type="CharacterBody2D"]
 script = ExtResource("1_larvae")
@@ -20,6 +20,7 @@ script = ExtResource("1_larvae")
 shape = SubResource("RectangleShape2D_larvae")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(0.8, 0.8, 0.2, 1)
 texture = SubResource("GradientTexture2D_larvae")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]

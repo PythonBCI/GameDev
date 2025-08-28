@@ -26,12 +26,37 @@ func _ready():
 	
 	# Setup UI
 	setup_ui()
+	
+	# Connect building button signals
+	connect_building_buttons()
 
 func setup_ui():
 	# Initialize labels with default values
 	update_resource_display(GameResources.new())
 	update_game_time(0)
 	update_unit_count(0)
+
+func connect_building_buttons():
+	if building_buttons and building_buttons.has_node("VBoxContainer"):
+		var buttons = building_buttons.get_node("VBoxContainer")
+		
+		# Connect unit buttons
+		if buttons.has_node("WorkerDroneButton"):
+			buttons.get_node("WorkerDroneButton").pressed.connect(_on_worker_drone_button_pressed)
+		if buttons.has_node("HarvesterButton"):
+			buttons.get_node("HarvesterButton").pressed.connect(_on_harvester_button_pressed)
+		if buttons.has_node("QueenButton"):
+			buttons.get_node("QueenButton").pressed.connect(_on_queen_button_pressed)
+		if buttons.has_node("LarvaeButton"):
+			buttons.get_node("LarvaeButton").pressed.connect(_on_larvae_button_pressed)
+		
+		# Connect structure buttons
+		if buttons.has_node("SpireButton"):
+			buttons.get_node("SpireButton").pressed.connect(_on_spire_button_pressed)
+		if buttons.has_node("NurseryButton"):
+			buttons.get_node("NurseryButton").pressed.connect(_on_nursery_button_pressed)
+		if buttons.has_node("CreepNodeButton"):
+			buttons.get_node("CreepNodeButton").pressed.connect(_on_creep_node_button_pressed)
 
 func update_resource_display(resources: GameResources):
 	if not resources:
@@ -114,3 +139,26 @@ func update_ui():
 func _process(delta):
 	# Update UI every frame
 	update_ui()
+
+# Building button signal handlers
+func _on_worker_drone_button_pressed():
+	print("Worker Drone button pressed")
+	# The world builder will handle the actual building logic
+
+func _on_harvester_button_pressed():
+	print("Harvester button pressed")
+
+func _on_queen_button_pressed():
+	print("Queen button pressed")
+
+func _on_larvae_button_pressed():
+	print("Larvae button pressed")
+
+func _on_spire_button_pressed():
+	print("Spire button pressed")
+
+func _on_nursery_button_pressed():
+	print("Nursery button pressed")
+
+func _on_creep_node_button_pressed():
+	print("Creep Node button pressed")

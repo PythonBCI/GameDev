@@ -1,123 +1,117 @@
 class_name Larvae
 extends Unit
 
-enum GrowthStage {STAGE_1, STAGE_2, STAGE_3, READY_TO_PUPATE}
-
 # Larvae specific properties
-@export var growth_stage: GrowthStage = GrowthStage.STAGE_1
 var growth_timer: Timer
-var growth_time_per_stage: float = 15.0  # 15 seconds per stage as per spec
-var total_growth_time: float = 45.0  # 3 stages * 15 seconds
-var current_growth_progress: float = 0.0
-
-# Movement toward nursery
-var nearest_nursery: Node = null
-var moving_to_nursery: bool = false
+var growth_time: float = 30.0  # 30 seconds to grow into a worker drone
+var growth_progress: float = 0.0
+var is_growing: bool = true
 
 func _ready():
 	super._ready()
 	unit_type = UnitType.LARVAE
-	speed = 8.0  # 8 pixels/second as per spec
+	speed = 16.0  # 16 pixels/second as per spec
 	carry_capacity = 0  # Larvae can't carry resources
+	health = 50
+	max_health = 50
 	
-	setup_growth_system()
+	# Add to hive units group
+	add_to_group("hive_units")
+	
+	# Setup growth
+	setup_growth()
 
-func setup_growth_system():
+func setup_growth():
 	growth_timer = Timer.new()
-	growth_timer.wait_time = growth_time_per_stage
-	growth_timer.autostart = true
-	growth_timer.timeout.connect(_on_growth_stage_complete)
+	growth_timer.wait_time = 0.1  # Update every 0.1 seconds
+	growth_timer.timeout.connect(_on_growth_tick)
 	add_child(growth_timer)
+	growth_timer.start()
 
 func check_for_tasks():
-	if growth_stage == GrowthStage.READY_TO_PUPATE:
-		# Find nearest nursery to pupate
-		find_nearest_nursery()
-	elif not moving_to_nursery:
-		# Random movement while growing
-		random_movement()
+	# Larvae don't do much except grow
+	# They can move around slowly but don't gather resources
+	if not is_growing:
+		# If fully grown, find a place to transform
+		find_transformation_spot()
 
-func find_nearest_nursery():
-	var nurseries = get_tree().get_nodes_in_group("nurseries")
-	var nearest_distance = INF
-	nearest_nursery = null
+func find_transformation_spot():
+	# Look for a spot near the hive to transform
+	if hive_core:
+		var target_position = hive_core.global_position + Vector2(
+			randf_range(-32, 32),
+			randf_range(-32, 32)
+		)
+		move_to(target_position)
+
+func _on_growth_tick():
+	if not is_growing:
+		return
 	
-	for nursery in nurseries:
-		var distance = global_position.distance_to(nursery.global_position)
-		if distance < nearest_distance:
-			nearest_distance = distance
-			nearest_nursery = nursery
+	growth_progress += 0.1 / growth_time
 	
-	if nearest_nursery:
-		move_to(nearest_nursery.global_position)
-		moving_to_nursery = true
+	if growth_progress >= 1.0:
+		complete_growth()
 
-func random_movement():
-	# Simple random movement within a small radius
-	var random_direction = Vector2(randf_range(-1, 1), randf_range(-1, 1)).normalized()
-	var random_distance = randf_range(16, 64)  # 16-64 pixels
-	var target = global_position + (random_direction * random_distance)
+func complete_growth():
+	is_growing = false
+	growth_timer.stop()
 	
-	move_to(target)
-
-func _on_growth_stage_complete():
-	advance_growth_stage()
-
-func advance_growth_stage():
-	match growth_stage:
-		GrowthStage.STAGE_1:
-			growth_stage = GrowthStage.STAGE_2
-			play_animation("stage_2")
-		GrowthStage.STAGE_2:
-			growth_stage = GrowthStage.STAGE_3
-			play_animation("stage_3")
-		GrowthStage.STAGE_3:
-			growth_stage = GrowthStage.READY_TO_PUPATE
-			play_animation("stage_3")  # Keep stage 3 animation
+	print("Larvae has grown into a worker drone!")
 	
-	# Update sprite based on growth stage
-	update_larvae_appearance()
-	
-	# Reset timer for next stage
-	if growth_stage != GrowthStage.READY_TO_PUPATE:
-		growth_timer.start()
+	# Transform into a worker drone
+	transform_into_worker_drone()
 
-func update_larvae_appearance():
-	# This will be called to update the visual appearance based on growth stage
-	# The actual sprite changes will be handled by the AnimatedSprite2D
-	pass
-
-func _on_nursery_reached():
-	if growth_stage == GrowthStage.READY_TO_PUPATE and nearest_nursery:
-		# Start pupation process
-		start_pupation()
-
-func start_pupation():
-	# This will trigger the evolution into a new unit type
-	# For now, just remove the larvae
-	queue_free()
+func transform_into_worker_drone():
+	# Create a new worker drone at this position
+	var worker_drone_scene = load("res://scenes/units/worker_drone.tscn")
+	if worker_drone_scene:
+		var worker_drone = worker_drone_scene.instantiate()
+		worker_drone.global_position = global_position
+		
+		# Add to the same parent
+		var parent = get_parent()
+		if parent:
+			parent.add_child(worker_drone)
+			
+			# Remove this larvae
+			queue_free()
+	else:
+		print("Failed to load worker drone scene for transformation")
 
 func _on_movement_finished():
-	if moving_to_nursery and nearest_nursery:
-		if global_position.distance_to(nearest_nursery.global_position) < 16.0:
-			_on_nursery_reached()
-		else:
-			moving_to_nursery = false
-			change_state(UnitState.IDLE)
-	else:
-		change_state(UnitState.IDLE)
+	# Larvae don't have complex movement tasks
+	change_state(UnitState.IDLE)
+
+# Override resource gathering - larvae can't gather resources
+func find_nearest_resource():
+	# Larvae don't gather resources
+	pass
+
+func start_gathering(resource_node: Node):
+	# Larvae don't gather resources
+	pass
+
+func complete_gathering():
+	# Larvae don't gather resources
+	pass
+
+func _on_resource_reached():
+	# Larvae don't gather resources
+	pass
+
+func _on_hive_reached():
+	# Larvae don't carry resources
+	pass
+
+# Override damage to make larvae more fragile
+func take_damage(amount: int):
+	health -= amount * 2  # Larvae take double damage
+	if health <= 0:
+		die()
 
 func get_growth_progress() -> float:
-	return current_growth_progress / total_growth_time
+	return growth_progress
 
-func get_growth_stage() -> GrowthStage:
-	return growth_stage
-
-func is_ready_to_pupate() -> bool:
-	return growth_stage == GrowthStage.READY_TO_PUPATE
-
-func accelerate_growth(acceleration_factor: float):
-	# Called by nursery structures to speed up growth
-	growth_timer.wait_time = growth_time_per_stage / acceleration_factor
-	if growth_timer.is_stopped():
-		growth_timer.start()
+func is_fully_grown() -> bool:
+	return growth_progress >= 1.0
