@@ -1,0 +1,28 @@
+[gd_scene load_steps=4 format=3 uid="uid://c8xvhxqxqxqxq"]
+
+[ext_resource type="Script" path="res://scripts/worker_drone.gd" id="1_worker"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_worker"]
+size = Vector2(16, 16)
+
+[sub_resource type="Gradient" id="Gradient_worker"]
+colors = PackedColorArray(0.2, 0.6, 0.8, 1, 0.1, 0.4, 0.6, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_worker"]
+gradient = SubResource("Gradient_worker")
+width = 16
+height = 16
+
+[node name="WorkerDrone" type="CharacterBody2D"]
+script = ExtResource("1_worker")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_worker")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = SubResource("GradientTexture2D_worker")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+visible = false
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]

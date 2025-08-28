@@ -1,0 +1,28 @@
+[gd_scene load_steps=4 format=3 uid="uid://d9xvhxqxqxqxq"]
+
+[ext_resource type="Script" path="res://scripts/harvester.gd" id="1_harvester"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_harvester"]
+size = Vector2(16, 32)
+
+[sub_resource type="Gradient" id="Gradient_harvester"]
+colors = PackedColorArray(0.8, 0.2, 0.2, 1, 0.6, 0.1, 0.1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_harvester"]
+gradient = SubResource("Gradient_harvester")
+width = 16
+height = 32
+
+[node name="Harvester" type="CharacterBody2D"]
+script = ExtResource("1_harvester")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_harvester")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = SubResource("GradientTexture2D_harvester")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+visible = false
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
