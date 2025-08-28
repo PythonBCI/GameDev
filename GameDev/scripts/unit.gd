@@ -131,6 +131,24 @@ func update_movement(delta):
 		if current_path_index >= path.size():
 			change_state(UnitState.IDLE)
 
+func _update_movement(delta):
+	# Basic movement logic for child classes
+	if path.size() == 0 or current_path_index >= path.size():
+		change_state(UnitState.IDLE)
+		return
+	
+	var target = path[current_path_index]
+	var direction = (target - global_position).normalized()
+	velocity = direction * speed
+	
+	move_and_slide()
+	
+	# Check if we've reached the current waypoint
+	if global_position.distance_to(target) < 8.0:  # 8 pixel threshold
+		current_path_index += 1
+		if current_path_index >= path.size():
+			change_state(UnitState.IDLE)
+
 func move_to(target: Vector2):
 	target_position = target
 	# Get path synchronously without await
