@@ -164,4 +164,6 @@ func update_movement(delta):
 					_on_movement_finished()
 	else:
 		# Normal movement
-		super.update_movement(delta)
+		# Call parent movement method
+		if has_method("_update_movement"):
+			_update_movement(delta)
