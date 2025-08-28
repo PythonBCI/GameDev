@@ -330,3 +330,63 @@ script = ExtResource("1_0k8m2")
 
 [node name="WorldBuilder" type="Node" parent="."]
 script = ExtResource("7_6p4s8")
+
+[ext_resource type="Script" path="res://scripts/corruption_system.gd" id="16_5y3b7"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_1"]
+radius = 48.0
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_4"]
+gradient = SubResource("Gradient_4")
+width = 96
+height = 96
+
+[sub_resource type="Gradient" id="Gradient_4"]
+colors = PackedColorArray(0.2, 0.4, 0.8, 1, 0.1, 0.2, 0.6, 1)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4"]
+size = Vector2(80, 60)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_5"]
+gradient = SubResource("Gradient_5")
+width = 80
+height = 60
+
+[sub_resource type="Gradient" id="Gradient_5"]
+colors = PackedColorArray(0.1, 0.4, 0.1, 1, 0.05, 0.2, 0.05, 1)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_2"]
+radius = 16.0
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_6"]
+gradient = SubResource("Gradient_6")
+width = 32
+height = 32
+
+[sub_resource type="Gradient" id="Gradient_6"]
+colors = PackedColorArray(0.4, 0.3, 0.2, 1, 0.2, 0.1, 0.05, 1)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5"]
+size = Vector2(60, 40)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_7"]
+gradient = SubResource("Gradient_7")
+width = 60
+height = 40
+
+[sub_resource type="Gradient" id="Gradient_7"]
+colors = PackedColorArray(0.3, 0.5, 0.2, 1, 0.1, 0.3, 0.1, 1)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6"]
+size = Vector2(64, 48)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_8"]
+gradient = SubResource("Gradient_8")
+width = 64
+height = 48
+
+[sub_resource type="Gradient" id="Gradient_8"]
+colors = PackedColorArray(0.6, 0.4, 0.2, 1, 0.3, 0.2, 0.1, 1)
+
+[sub_resource type="TileSet" id="TileSet_2"]
+tile_size = Vector2i(16, 16)
